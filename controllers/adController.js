@@ -2,19 +2,53 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const getAllAds = async (req, res) =>{
-    const ads = await prisma.ad.findMany(
-        {include:
-            {
-                category: true, 
-                user:{
-                    select: {
-                        email: true
+    //Gaunam is uzklausos kategorijos id ir paieskos teksta
+    const {categoryId, search} = req.query;
+
+    try{
+
+        const where = {};
+
+        //Jeigu is uzklausos gavo kategorija. Ieskom kategorijos duomenu bazeje pagal id
+        if(categoryId){
+            where.categoryId = parseInt(categoryId)
+            const category = await prisma.category.findUnique({
+                where: {id: parseInt(categoryId)}
+            })
+        }
+
+        if(search){
+            where.OR = [
+                {title: {contains: search}},
+                {content: {contains: search}}
+            ]
+        }
+       
+        //Jeigu kategorija nebuvo siusta arba kategorijos nera db. Grazinam 404
+        if(!categoryId){
+            return res.status(404).json({
+                message: "Kategorija nerasta"
+            })
+        }
+
+        //Grazinam skelbimus pagal kategorijos 
+        const ads = await prisma.ad.findMany({
+            where,
+            include:
+                {
+                    user:{
+                        select: {
+                            email: true
+                        }
                     }
                 }
-            }
-            }
-    );
-    res.status(200).json({ads})
+                }
+        );
+        res.status(200).json({ads})
+    }catch(err){
+        console.log(err)
+        res.status(500).json({error: err.message})
+    }
 }
 
 export const createAd = async (req, res,)=>{

@@ -1,10 +1,12 @@
 import express from 'express';
 import {register, login} from '../controllers/authController.js';
+//1.
 import { registerValidator, loginValidator } from '../utils/validators.js';
 import { validationResult } from 'express-validator';
 
 const router = express.Router();
 
+//2
 const validate = (validator) =>[
     ...validator,
     (req, res, next) =>{
@@ -15,6 +17,50 @@ const validate = (validator) =>[
     }
 ]
 
+
+/**
+ * @swagger
+ * /api/v1/auth/register:
+ *  post:
+ *    summary: Vartotojo registracija
+ *    tags: [Auth]
+ *    requestBody:
+ *      content:
+ *        application/json:
+ *          schema: 
+ *            type: object
+ *            required: [email, password]
+ *            properties:
+ *              email:
+ *                type: string
+ *              password: 
+ *                type: string
+ *    responses:
+ *      201:
+ *        description: Registracija sekminga
+ */
+
+/**
+ * @swagger
+ * /api/v1/auth/login:
+ *  post:
+ *    summary: Vartotojo prisijungimas
+ *    tags: [Auth]
+ *    requestBody:
+ *      content:
+ *        application/json:
+ *          schema: 
+ *            type: object
+ *            required: [email, password]
+ *            properties:
+ *              email:
+ *                type: string
+ *              password: 
+ *                type: string
+ *    responses:
+ *      201:
+ *        description: Prisijungta sekmingai
+ */
 router.route('/register').post(validate(registerValidator), register);
 router.route('/login').post(validate(loginValidator),login);
 

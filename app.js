@@ -1,9 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
-
 import authRoutes from './routes/authRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js'
 import adRoutes from './routes/adRoutes.js'
+import {swagerDocs} from './utils/swagger.js'
 
 dotenv.config();
 
@@ -23,6 +23,7 @@ const port = process.env.PORT || 3000;
 app.listen(port, ()=>{
     console.log(`Serveris veikia ant http://localhost:${port}`)
 })
+swagerDocs(app)
 
 
 
