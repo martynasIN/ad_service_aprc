@@ -1,6 +1,6 @@
 import express from 'express';
 import { getCategories, createCategory } from '../controllers/categoryController.js';
-import { authenticate } from '../middlewares/authMiddleware.js'; 
+import { authenticate, isAdmin } from '../middlewares/authMiddleware.js'; 
 
 const router = express.Router();
 /**
@@ -33,6 +33,6 @@ const router = express.Router();
 router  
     .route('/')
     .get(getCategories)
-    .post(authenticate, createCategory)
+    .post(authenticate, isAdmin, createCategory)
 
 export default router;

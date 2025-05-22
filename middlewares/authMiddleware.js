@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
 export const authenticate = (req, res, next) =>{
     const authHeader = req.headers.authorization;
@@ -16,4 +18,24 @@ export const authenticate = (req, res, next) =>{
             res.status(401).json({message: 'Token negalioja'})
         }
 
+}
+
+export const isAdmin = async  (req, res, next) =>{
+    const userId = req.user?.id;
+    if(!userId) return res.status(401).json({message: 'Neleista'})
+    
+    const adminRole = await prisma.role.findUnique({where: {name: 'admin'}})
+
+    if(!adminRole) return res.status(500).json({message: "Admin role nerasta"})
+    
+    const userRole = await prisma.userRole.findFirst({
+        where: {
+            userId: userId,
+            roleId: adminRole.id
+        }
+    })
+
+    if(!userRole) return res.status(403).json({message: "Prieiga draudziama, reikia admin roles"})
+    
+    next();
 }

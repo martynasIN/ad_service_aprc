@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js'
 import adRoutes from './routes/adRoutes.js'
+import adminRoutes from './routes/adminRoutes.js';
 import {swagerDocs} from './utils/swagger.js'
 
 dotenv.config();
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/ads', adRoutes);
+app.use('/api/v1/admin', adminRoutes)
 
 app.get('/', (req, res)=>{
     res.send('Skelbimu API')
